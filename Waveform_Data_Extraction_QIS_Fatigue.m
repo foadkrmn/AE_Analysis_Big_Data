@@ -1,15 +1,15 @@
+%%%%%% This code is designed to find waveform files for valid signals and measure their information entropy %%%%%%%%%%%%% 
+
 clc;
 clear all;
 
-% load('AE_Data_Extraction_Fatigue_04-Mar-2021')
-% lib = load('QIS_Test_lib','Test');
-% lib = lib.Test;
-
-load('Waveform_data_QIS_08-Mar-2021')
+load('AE_Data_Extraction_Fatigue_04-Mar-2021')
+lib = load('QIS_Test_lib','Test');
+lib = lib.Test;
 
 %% Get the list of waveform files in different waveform folders
 
-for i= 13 %1:size(AE_data,2) % Extract all the information needed
+for i= 1:size(AE_data,2) % Extract all the information needed
     
     for j=1:size(lib,2) % Find the index of it
         if contains(lib(j).name, AE_data(i).test_name) == 1
@@ -71,7 +71,7 @@ clear i j k ind AE_loc d dfolders wave_fldr_loc t_name Ch1_waves Ch2_waves name 
 % depending on how fast is waveform finding for Ch2, it is then decided to
 % either look at Ch1 or not. 
 tic
-for i = 13 %1:size(AE_data,2)
+for i = 1:size(AE_data,2)
     disp(['Test ',AE_data(i).test_name,' --> Start ...'])
     
     for n = 1:size(AE_wave(i).folder_name,1)
@@ -177,7 +177,7 @@ kurt = 'G:\My Drive\Research\Fatigue on composites (with Dr Modarres)\TDA Projec
 sk_coeff = csvread(skew);
 kur_coeff = csvread(kurt);
 
-for i= 7 %1:size(AE_data,2)
+for i= 1:size(AE_data,2)
     
     disp(['Test ',AE_data(i).test_name,' --> Start ...'])
     
@@ -312,26 +312,6 @@ clear ent_temp j prob edge entropy wave_time waveform fl_waveform HLT_ind bin_mo
        
 %% save
 
-% name = ['Waveform_data_QIS_',date]; % To save the result of all tests
-
-% name = ['Waveform_data_QIS_23_',date]; % To save individual tests
-
-% name = 'Accidental save'; % This is to prevent overwriting the actual data accidentally 
+name = ['Waveform_data_QIS_',date]; % To save the result of all tests
 
 save(name,'-v7.3')
-
-
-%% 
-aa = load('Waveform_data_QIS_23_08-Mar-2021','AE_wave');
-
-%% Generate a list of waveforms to keep
-
-test = 7;
-keeplist = AE_wave(test).Ch2_wave_loc; % This is the waveforms to keep
-keeplist = keeplist(all(~isnan(keeplist),2),:);
-
-writematrix(keeplist,'Keeplist_QIS_23.csv')
-% type 'Keeplist_QIS_26.csv'
-
-
-clear test keeplist
