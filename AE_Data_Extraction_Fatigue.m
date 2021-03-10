@@ -1,10 +1,10 @@
+%%%%%%% This code is designed to extract valid signals from all the available signals and prepare them for waveform analysis %%%%%%%%%%%%
+
 clc;
 clear all;
 
-% lib = load('QIS_Test_lib','Test');
-% lib = lib.Test;
-
-load('AE_Data_Extraction_Fatigue_04-Mar-2021')
+lib = load('QIS_Test_lib','Test');
+lib = lib.Test;
 
 %% Select the tests
 % Select the test names
@@ -14,7 +14,7 @@ test_name = ['QIS_08';'QIS_09';'QIS_10';'QIS_16';...
              'QIS_27';'QIS_28']; 
 o=1;
 for j =1:size(test_name,1)
-%     fprintf('Test name is %s \n', test_name(j,:))
+    fprintf('Test name is %s \n', test_name(j,:))
     for i=1:size(lib,2) % Find the index of it
         if contains(lib(i).name, test_name(j,:)) == 1
             t_ind(o,:) = i;
@@ -29,7 +29,7 @@ clear i o
 
 %% Load AE data
 
-for i= 13 %[6,7,10,14]%1:6%1:length(t_ind) % Extract all the information needed
+for i= 1:length(t_ind) % Extract all the information needed
     AE_loc = [lib(t_ind(i)).AE_loc,'\'];
     
     AE_data(i).test_name = lib(t_ind(i)).name;
@@ -81,7 +81,7 @@ clear i j th temp_hit tp temp_para t_hit t_para txt_files test_fname sum_fname p
 
 %% Find initial and end index number of loading blocks
 
-for i= 14 %1:size(AE_data,2)
+for i= 1:size(AE_data,2)
     
     block_inds = find(AE_data(i).para(:,3)<0.5); % Initial tensile loadings in blocks
     block_init = block_inds([0;diff(block_inds)]>1); % Find the borders of loading blocks
@@ -130,7 +130,7 @@ clear block_avg_load block_data block_inds block_init block_inits cycle filter f
 
 %% Extract cycle number from Para file
 
-for i= 14 %1:size(AE_data,2)
+for i= 1:size(AE_data,2)
     
     filter = [];
     cycle = [];
@@ -232,7 +232,7 @@ clear i k
 %% Apply delta T filter
 % We do this loading block by loading block.
 
-for i= 14 %1:size(AE_data,2)
+for i= 1:size(AE_data,2)
     
     deltaT = AE_data(i).DeltaT; % Delta T value recorded at the begining of test
     
@@ -294,7 +294,7 @@ clear init_time end_time block_hit_1 block_hit_2 temp_ind deltaT
 % Find cycle numbers for 1 channel and add the same to the other. Since
 % delta T filtereing is already performed, this is correct and saves time.
 
-for i= 14 %1:size(AE_data,2)
+for i= 1:size(AE_data,2)
     
     cycle = [];
     
@@ -346,7 +346,7 @@ clear init_time end_time block_hit_1 temp_ind
 % When a cycle number 0 is assigned to a hit, it means the hit was recorded
 % in tensile loading not fatigue loading
 
-for i= 14 %1:size(AE_data,2)
+for i= 1:size(AE_data,2)
     
    AE_data(i).Ch1_dtf(AE_data(i).Ch1_dtf(:,19) == 0,:) = [];
    AE_data(i).Ch2_dtf(AE_data(i).Ch2_dtf(:,19) == 0,:) = [];
@@ -357,7 +357,7 @@ clear i
 
 %% Now remove hits that have load values less than 1 [kN]
 
-for i= 14 %1:size(AE_data,2)
+for i= 1:size(AE_data,2)
     
    AE_data(i).Ch1_dtf(AE_data(i).Ch1_dtf(:,3) < 1,:) = [];
    AE_data(i).Ch2_dtf(AE_data(i).Ch2_dtf(:,3) < 1,:) = [];
@@ -368,7 +368,7 @@ clear i
 
 %% Statistics of valid hits 
 
-for i= 14 %1:size(AE_data,2)
+for i= 1:size(AE_data,2)
     fprintf('----------------\n Test %s \n',AE_data(i).test_name(1:6))
     
     ch1 = length(AE_data(i).Ch1_dtf)/length(AE_data(i).Ch1_data);
@@ -383,7 +383,7 @@ clear i ch1 ch2
 x_axis = 2;
 y_axis = 3;
 
-for i= 14 %1:size(AE_data,2)
+for i= 1:size(AE_data,2)
     
     figure()
     yyaxis left
@@ -415,5 +415,4 @@ clear x_axis y_axis i
 % name = 'AE_Data_Extraction_Fatigue';
 % name = [name,'_',date];
 
-% save(name)
 save(name,'-v7.3')
